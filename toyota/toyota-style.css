@@ -12,7 +12,7 @@
     left: 1030px;
     bottom:50px;
 }
-.box:hover .cover-gray:nth-child(odd):nth-child(odd){
+.box:hover .cover-gray:nth-child(odd){
     left: 820px;
     transition: all .8s;
 }
