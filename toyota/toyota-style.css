@@ -16,14 +16,12 @@
     left: 820px;
     transition: all .8s;
 }
-/* .box .gray:nth-child(even){
-    position: relative;
-    left:0px;
-    bottom: 80px;
+/* .box .cover-gray:nth-child(even){
+    left:300px;
+    bottom: 400px;
 } */
-/* .box:hover .gray:nth-child(even){
-    bottom: 0px;
-    right: 0px;
+/* .box:hover .cover-gray:nth-child(even){
+    bottom: 200px;
     transition: all .8s;
 } */
 
