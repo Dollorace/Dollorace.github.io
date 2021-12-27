@@ -68,7 +68,7 @@
 }
 .box:hover .title:nth-child(even){
     right: 120px;
-    transition: all .1s .1s;
+    transition: all .5s;
 }
 
 .pic .title h1{
