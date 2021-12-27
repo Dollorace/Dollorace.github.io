@@ -135,15 +135,3 @@
     display: inline-block;
     background-color: black;
 }
-/* .cover{
-    width: 500px;
-    height: 500px;
-    border-color: rgb(238, 38, 38);
-    position: relative;
-    left: 50px;
-} */
-/* .box:hover .cover{
-    bottom: 0px;
-    right: 0px;
-    transition: all .1s .1s;
-} */
