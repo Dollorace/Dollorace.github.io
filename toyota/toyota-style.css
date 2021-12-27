@@ -8,24 +8,24 @@
     background-color: rgb(247, 247, 247);
     position: relative;
 }
-.cover:nth-child(odd){
+.box:nth-child(odd) .cover{
     left: 1030px;
     bottom:50px;
 }
-.box:hover .cover:nth-child(odd){
+.box:nth-child(odd):hover .cover{
     left: 820px;
     transition: all .8s;
 }
-/* .box .cover:nth-child(even){
+.box:nth-child(even) .cover{
     left:300px;
     bottom: 400px;
 }
-.box:hover .cover:nth-child(even){
+.box:nth-child(even):hover .cover{
     bottom: 200px;
     transition: all .8s;
-} */
+}
 
-.cover-even{
+/* .cover-even{
     width: 400px;
     height: 300px;
     background-color: rgb(247, 247, 247);
@@ -37,7 +37,7 @@
 .box:hover .cover-even{
     bottom: 200px;
     transition: all .8s;
-}
+} */
 .box{
     width: 1400px;
     margin: auto;
