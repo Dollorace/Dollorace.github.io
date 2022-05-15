@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+        <title>League of Legends</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+            }
+            .title{
+                position: fixed;
+                z-index: 2;
+                top: 0px;
+                height: 100px;
+                background-color: rgba(0, 0, 0, 0.8);
+                padding: 25px;
+            }
+
+            .bg-img {
+                background-image: url(bg-img.jpg);
+                background-attachment: fixed;
+                background-repeat: no-repeat;
+            }
+    
+            @media (min-width: 768px) {
+                .bg-img {
+                    background-size: 100% 100%;
+                }
+            }
+
+            @media (min-width: 1200px) {
+                .bg-img {
+                    background-size: 100% 100%;
+                }
+            }
+
+            .card {
+                border: 6px solid rgb(207, 159, 201);
+                top: 120px;
+                color: white;
+                background-image: linear-gradient(to top left, rgba(83, 111, 235, 0.815), rgb(104, 11, 91));
+                /* overflow: hidden; */
+                /* rgb(247, 178, 178) */
+            }
+    
+            /* .img {
+                overflow: hidden;
+            } */
+    
+            .card-title {
+                color: white;
+                border: 2px solid rgba(236, 247, 141, 0.8);
+                border-radius: 5px;
+                padding: 5px;
+                display: inline-block;
+            }
+            .card-text{
+                text-overflow: ellipsis;
+                height: 1.8rem;
+            }
+            .card-img{
+                width: 100%;
+            }
+    
+            .card:hover {
+                border: 6px solid rgb(247, 245, 137);
+                box-shadow:5px 5px 10px #44e7f3;
+                /* background-image: linear-gradient(#000,#6C6C6C); */
+                background-image: linear-gradient(to top left, rgba(128, 149, 241, 0.815), rgb(238, 24, 209));
+            }
+    
+            .card:hover img {
+                box-shadow:-5px -5px 10px#44e7f3;
+                transform: scale(1.1);
+                transition: transform 0.5s;
+            }
+    
+            .card:hover .card-title {
+                color: black;
+                background-color: white !important;
+            }
+            .card:hover #detailBtn {
+                border: none;
+                background-color: #134999;
+            }
+            .card:hover #videoBtn {
+                border: none;
+                background-color: #134999;
+            }
+    
+            .modal-header {
+                background-color:rgba(128, 149, 241, 0.8);
+                color: white;
+            }
+    
+            #modal-role .modal-body {
+                position: relative;
+                overflow: hidden;
+            }
+    
+            #modal-picture, #modal-video-picture {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                margin: auto;
+            }
+    
+            .modal-body #roleContent, .modal-body iframe {
+                position: relative;
+                font-size: 20px;
+                background-color: rgba(233, 182, 226, 0.8);
+                border-radius: 20px;
+            }
+        </style>
+</head>
+
+<body>
+    <div class='title text-center w-100'>
+        <h1 class="text-white">LOL英雄聯盟圖鑑</h1>
+    </div>
+
+    <div class="bg-img">
+        <div class="container">
+            <div id="champion" class="row row-cols-1 row-cols-lg-4">
+            </div>
+        </div>
+    </div>
+
+    <template id="roleCard">
+        <div class="col p-3">
+            <div class="card d-flex flex-lg-column flex-row">
+                <div class="img m-auto p-2">
+                    <img src="" class="card-img" alt="...">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title"></h5>
+                    <p class="card-text"></p>
+                </div>
+                <div class="card-body buttonBtn text-end">
+                    <button id="detailBtn" type="button" class="btn btn-dark mb-1" data-bs-toggle="modal"
+                        data-bs-target="#modal-role">詳細介紹</button>
+                    <button id="videoBtn" type="button" class="btn btn-dark mb-1" data-bs-toggle="modal"
+                        data-bs-target="#modal-video">觀看影片</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- modal -->
+    <div class="modal fade" id="modal-role" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex">
+                    <img src="" alt="rolePicture" id="modal-picture" class="img">
+                    <div id="roleContent" class="p-4 m-auto">
+                        <p id="modalDescribe"></p>
+                        <ul class="role-info">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal-video -->
+    <div class="modal fade" id="modal-video" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex">
+                    <img src="" alt="rolePicture" id="modal-video-picture" class="img">
+                    <iframe id="video-player" class="w-100" width="560" height="315" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+        <script>
+            const url = 'https://ddragon.leagueoflegends.com/cdn/10.22.1/data/zh_TW/champion.json'
+            const xhr = new XMLHttpRequest()
+            const champion = document.querySelector('#champion')
+            const modalRoleTitle = document.querySelector('#modal-role #modalTitle')
+            const modalPic = document.querySelector('#modal-picture')
+            const modalVideoPic = document.querySelector('#modal-video-picture')
+            const modalDescribe = document.querySelector('#modalDescribe')
+            const modalvideoTitle = document.querySelector('#modal-video #modalTitle');
+            const roleInfoEle = document.querySelector('.role-info');
+            const videoPlayer = document.querySelector('#video-player');
+    
+            let roleArray = [];
+            let roleStatus = ['hp', 'movespeed','attackrange','attackspeed']
+            const videos = {
+                "Aatrox": "https://www.youtube.com/embed/0iiGWVhUqLA",
+                "Ahri": "https://www.youtube.com/embed/hlalkAUkwqE",
+                "Akali":"https://www.youtube.com/embed/b-s2YVbRP8I",
+                "Alistar":"",
+                "Amumu":"https://www.youtube.com/embed/0AvWV6Mk374",
+                "Anivia":"https://www.youtube.com/embed/8Syose1O568",
+                "Annie":"https://www.youtube.com/embed/aUTU-GnxVuM",
+                "Aphelios":"https://www.youtube.com/embed/lDoeuuBRUFg"
+            };
+    
+            window.onload = function () {
+                getData()
+            }
+    
+            function getData() {
+                xhr.onload = function () {
+                        let obj = JSON.parse(this.response)
+                        Object.values(obj.data).forEach(roleObj => {
+                            roleArray.push(roleObj)
+                        })
+                        setRoles()
+                }
+                xhr.open('GET', url)
+                xhr.send()
+            }
+    
+            function setRoles() {
+                roleArray.forEach(role => {
+                    setCard(role)
+                })
+            }
+    
+            function setCard(role) {
+                let cloneCard = document.querySelector('#roleCard').content.cloneNode(true)
+                cloneCard.querySelector('img').src = `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${role.id}_0.jpg`
+                cloneCard.querySelector('.card-title').innerText = role.name
+                cloneCard.querySelector('.card-text').innerText = role.blurb.substring(0, 30) + '...'
+                cloneCard.querySelector('#detailBtn').addEventListener('click', setRoleModal.bind(event, role))
+                cloneCard.querySelector('#videoBtn').addEventListener('click', setvideoModal.bind(event, role))
+    
+                champion.appendChild(cloneCard)
+            }
+    
+            function setRoleModal(role) {
+                modalRoleTitle.innerText = role.name + ' ' + role.id
+                modalPic.src = `https://cdngarenanow-a.akamaihd.net/games/lol/2020/LOLwebsite/champion/${role.id}_0.jpg`
+                modalDescribe.innerText = role.blurb;
+                roleInfoEle.innerHTML = '';
+                Object.keys(role.info).forEach(key => {
+                    const liEle = createDetailEle(key, role.info[key]);
+                    roleInfoEle.appendChild(liEle);
+                });
+                Object.keys(role.stats)
+                .filter(key => roleStatus.find(statsName => statsName === key))
+                .forEach(key => {
+                    const liEle = createDetailEle(key, role.stats[key]);
+                    roleInfoEle.appendChild(liEle);
+                })
+            }
+
+            function createDetailEle(name, value) {
+                const liEle = document.createElement('li');
+                liEle.setAttribute('class', 'row p-1');
+                const nameEle = document.createElement('span');
+                nameEle.setAttribute('class', 'badge bg-primary bg-opacity-50 col-3 p-2');
+                nameEle.innerText = name;
+                const valueEle = document.createElement('span');
+                valueEle.setAttribute('class', 'detail col');
+                valueEle.innerText = value;
+
+                liEle.appendChild(nameEle);
+                liEle.appendChild(valueEle);
+                return liEle;
+            }
+    
+            function setvideoModal(role) {
+                console.log(role);
+                modalvideoTitle.innerText = role.name + ' ' + role.id;
+                modalVideoPic.src = `https://cdngarenanow-a.akamaihd.net/games/lol/2020/LOLwebsite/champion/${role.id}_0.jpg`;
+                if (videos[role.id]) {
+                    videoPlayer.setAttribute('src', videos[role.id]);
+                }else{
+                    videoPlayer.setAttribute('src','https://www.youtube.com/embed/vgPi-XAPPPk');
+                }
+            }
+        </script>
+</body>
+
+</html>
