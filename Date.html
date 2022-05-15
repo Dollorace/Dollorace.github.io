@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date</title>
+
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cantarell&family=Changa:wght@200&family=Island+Moments&family=Permanent+Marker&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+        integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    
+    <style>
+        body{
+            background-color: #675d5d;
+        }
+
+        .container {
+            max-width: 1200px;
+        }
+
+        .date-col {
+            position: absolute;
+        }
+
+        h1{
+            font-family: 'Changa', sans-serif;
+            font-size: 80px;
+            color: #d3a6a6;
+        }
+
+        .week{
+            font-family: 'ZCOOL KuaiLe', cursive;
+            color: rgb(220, 180, 135);
+        }
+        
+        .td {
+            border-radius: 5%;
+            background-color: #d6b8d7;
+            color: rgb(255, 255, 255);
+            font-family: 'Cantarell', sans-serif;
+        }
+
+        .overview-modal-content{
+            background-color:  rgb(220, 180, 135);
+
+        }
+
+        
+        li {
+            color: #463f3a;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .add-modal-content{
+            background-color: #d4b1b1;
+        }
+
+
+        
+        input,
+        textarea {
+            width: 400px;
+            border-radius: 5px;
+            resize: vertical;
+            border: solid 1px rgb(244, 218, 218);
+        }
+
+        
+        i::before {
+            color: #463f3a;
+        }
+
+
+        .edit-modal-content{
+            background-color: #d4b1b1;
+        }
+
+
+        #itembtn {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row position-relative">
+            <div class="col date-col">
+                <div class="row">
+                    <div class="col-12">
+                        <h1 class="title fw-bold text-center">year-month</h1>
+                    </div>
+                </div>
+                <div class="row me-5">
+                    <div class="col-12 d-flex justify-content-end">
+                        <button type="button" class="mx-1 btn-sm btn-secondary" onclick="lastMonth()">往上月</button>
+                        <button type="button" class="mx-1 btn-sm btn-secondary" onclick="nextMonth()">往下月</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row">
+                            <div class="col-12 d-flex justify-content-around">
+                                <div class="week fw-bold fs-2 text-center">日</div>
+                                <div class="week fw-bold fs-2 text-center">一</div>
+                                <div class="week fw-bold fs-2 text-center">二</div>
+                                <div class="week fw-bold fs-2 text-center">三</div>
+                                <div class="week fw-bold fs-2 text-center">四</div>
+                                <div class="week fw-bold fs-2 text-center">五</div>
+                                <div class="week fw-bold fs-2 text-center">六</div>
+                            </div>
+                        </div>
+                        <div class="row tbody-row">
+                            <!-- 動態生成tbody內物件 -->
+                            <!-- <div class="col-12 tr d-flex justify-content-evenly weektr">
+                                <div class="td fs-5 ">01</div>
+                                <div class="td fs-5 ">02</div>
+                                <div class="td fs-5 ">03</div>
+                                <div class="td fs-5 ">04</div>
+                                <div class="td fs-5 ">05</div>
+                                <div class="td fs-5 ">06</div>
+                                <div class="td fs-5 ">07</div>
+                            </div>
+                            <div class="col-12 tr d-flex
+                            justify-content-evenly">
+                                <div class="td fs-5 ">11</div>
+                                <div class="td fs-5 ">21</div>
+                                <div class="td fs-5 ">31</div>
+                                <div class="td fs-5 ">41</div>
+                                <div class="td fs-5 ">51</div>
+                                <div class="td fs-5 ">61</div>
+                                <div class="td fs-5 ">71</div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- Modal -->
+     <div id="overview-modal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered ">
+            <div class="modal-content overview-modal-content">
+                <div class="modal-header">
+                    <p id="overviewdate" class="mt-3"></p>
+                    <h5 class="modal-title">行程總覽</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body overviewdiv">
+                    <!-- <div class="overviewdiv"></div> -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn overviewbtn">新增<i class="ms-1 fas fa-plus"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新增Modal -->
+    <div id="add-modal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content add-modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">新增事項</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex flex-column align-items-center">
+                    日期<input id="add-date" type="text" class="mb-2">
+                    標題<input id="add-title" type="text" class="mb-2">
+                    <textarea name="add" id="add-txt" cols="40" rows="5"></textarea>
+                </div>
+                <div class="modal-footer justify-content-around">
+                    <button type="button" class="btn" data-bs-dismiss="modal">取消<i class="ms-1 fas fa-times"></i></button>
+                    <button type="button" class="btn" onclick="addTodoItem()">加入<i class="ms-1 fas fa-check"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 編輯Modal -->
+    <div id="edit-modal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content edit-modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">編輯</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex flex-column align-items-center">
+                    <input id="edit-date" type="text"  class="mb-2">
+                    <input id="edit-title" type="text"  class="mb-2">
+                    <textarea name="edit" id="edit-txt" cols="40" rows="5"></textarea>
+                </div>
+                <div class="modal-footer justify-content-around">
+                    <button type="button" class="btn" data-bs-dismiss="modal" onclick="deleteTodoItem()">
+                        刪除
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+
+                    <button type="button" class="btn" onclick="editTodoItem()">
+                        確定<i class="fas fa-check"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+        integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+        integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+        crossorigin="anonymous"></script>
+    <script>
+
+        //點開畫面顯示今天
+        const today = new Date()
+        //today的年月日
+        let year = today.getFullYear()
+        let month = today.getMonth()
+        let date = today.getDate()
+
+        //抓編輯事件的索引
+        let currentTodoIndex
+
+        
+        const tbody = document.querySelector('.tbody-row')
+        const title = document.querySelector('h1')
+        const arrowBtn = document.getElementById('')
+
+        const addModal = document.getElementById('add-modal')
+        const addDate = document.getElementById('add-date')
+        const addTitle = document.getElementById('add-title')
+        const addTxt = document.getElementById('add-txt')
+
+        const editModal = document.getElementById('edit-modal')
+        const editDate = document.getElementById('edit-date')
+        const editTitle = document.getElementById('edit-title')
+        const editTxt = document.getElementById('edit-txt')
+
+        //總覽的modal
+        const overviewModal = document.getElementById('overview-modal')
+        const overviewDiv = document.querySelector('.overviewdiv')
+        const overviewBtn = document.querySelector('.overviewbtn')
+        const overviewDate = document.getElementById('overviewdate')
+        overviewDate.classList.add('me-2')
+
+        
+        window.onload = function () {
+            init()
+        }
+        
+        function init() {
+            tbody.innerHTML = ''
+            title.innerText = `${year}-${month + 1}`
+            
+            let day = 1
+            //tr星期，td日期
+
+            //1號是禮拜幾
+            let firstDay = new Date(year, month, 1).getDay()
+
+            //這個月有幾天=下個月的第0天
+            let lastDay = new Date(year, month + 1, 0).getDate()
+
+            //上個月最後一天
+            let dayOfLastMonth = new Date(year, month, 0).getDate()
+
+            //下月第一天
+            let dayOfNextMonth = 1
+
+            let weeks = Math.ceil((firstDay + lastDay) / 7)
+            //console.log(weeks);
+            for (let week = 0; week < weeks; week++) {
+
+                //生成tr
+                let tr = document.createElement('tr')
+                tr.classList.add('col-12', 'tr', 'd-flex', 'justify-content-evenly')
+                for (let col = 0; col < 7; col++) {
+                    let td = document.createElement('td')
+                    let itemButton = document.createElement('button')
+                    itemButton.innerText = 'add'
+                    itemButton.classList.add('class', 'btn')
+                    itemButton.setAttribute('id', 'itembtn')
+                    td.classList.add('td', 'fs-4', 'inline-block','m-2','p-3','py-5')
+
+                    if (week == 0 && col < firstDay) {
+                        //上個月
+                        td.innerText = (dayOfLastMonth - firstDay + 1).toString().padStart(2, '0')
+                        dayOfLastMonth++
+                        td.classList.add('opacity-25')
+                        td.append(itemButton)
+                    }
+                    else {
+                        if (day <= lastDay) {
+                            //這個月
+                            let testDay = day.toString().padStart(2, '0');
+                            td.innerText = day.toString().padStart(2, '0');
+                            const localData = JSON.parse(localStorage.getItem(`${year}-${month + 1}-${td.childNodes[0].data}`));
+
+                            if(day == today.getDate() && month == today.getMonth() && year == today.getFullYear()){
+                                td.setAttribute('style','background-color: gold;')                                
+                            }
+                            
+                            if(localData && localData.length > 0){
+                                td.setAttribute('style','background-color: hotpink;')
+                                itemButton.innerText = 'see'
+                            }                                                       
+
+
+                            //渲染畫面
+                            //點itemButton時，裡面沒有東西也可以點進去
+                            itemButton.onclick = function () {
+
+                                //清空
+                                overviewDiv.innerHTML = ''
+                                bootstrap.Modal.getOrCreateInstance(overviewModal).show()
+
+                                overviewDate.innerText = `${year}-${month + 1}-${td.childNodes[0].data}`
+                                //overview modal
+                                overviewDiv.onclick = function () {
+                                    addTitle.value = ''
+                                    addTxt.value = ''
+                                    //產生
+                                    bootstrap.Modal.getOrCreateInstance(addModal).show()
+                                    addDate.value = overviewDate.innerText
+                                    console.log(addDate.value);
+                                    //隱藏
+                                    bootstrap.Modal.getOrCreateInstance(overviewModal).hide()
+                                }
+                                
+
+                                overviewBtn.onclick = function () {
+                                    //新增
+                                    addTitle.value = ''
+                                    addTxt.value = ''
+                                    bootstrap.Modal.getOrCreateInstance(addModal).show()
+                                    addDate.value = overviewDate.innerText
+                                    bootstrap.Modal.getOrCreateInstance(overviewModal).hide()
+                                }
+
+                                //如果是空的就新增事項
+                                if (localStorage.getItem(`${year}-${month + 1}-${td.childNodes[0].data}`) != null) {
+                                    
+                                    let ul = document.createElement('ul')
+                                    //localStorage找日期
+                                    //td.childNodes[0].data   ((((is日期
+                                    let todoList = JSON.parse(localStorage.getItem(`${year}-${month + 1}-${td.childNodes[0].data}`))
+                                    //所有代辦事項迭代
+                                    todoList.forEach((item, index) => {
+                                        let li = document.createElement('li')
+                                        li.innerText = `${index + 1}. ${item.title}`
+                                                                                
+                                        //點li進去編輯
+                                        li.onclick = function (event) {
+                                            bootstrap.Modal.getOrCreateInstance(overviewModal).hide()
+                                            bootstrap.Modal.getOrCreateInstance(editModal).show()
+
+                                            currentTodoIndex = index
+                                            editDate.value = `${year}-${month + 1}-${td.childNodes[0].data}`
+                                            // console.log(td.childNodes);
+                                            editTitle.value = item.title
+                                            editTxt.value = item.txt
+                                            //避免冒泡
+                                            event.stopPropagation()
+                                        }
+                                        ul.append(li)
+                                    })
+                                    overviewDiv.append(ul)
+                                }
+                                //事項空的時候也可以新增，要可以按
+                                else {
+                                    overviewDiv.onclick = function () {
+                                        bootstrap.Modal.getOrCreateInstance(addModal).show()
+                                        addDate.value = overviewDate.innerText
+                                        bootstrap.Modal.getOrCreateInstance(overviewModal).hide()
+                                    }
+                                    overviewBtn.onclick = function () {
+                                        bootstrap.Modal.getOrCreateInstance(addModal).show()
+                                        addDate.value = overviewDate.innerText
+                                        bootstrap.Modal.getOrCreateInstance(overviewModal).hide()
+                                    }
+                                }
+                            }
+
+                        } else {
+                            //下個月
+                            td.innerText = dayOfNextMonth.toString().padStart(2, '0')
+                            dayOfNextMonth++
+                            td.classList.add('opacity-25')
+                        }
+                        day++
+                        td.append(itemButton)
+                    }
+                    tr.appendChild(td)
+                }
+                tbody.appendChild(tr)
+            }
+        }
+        //上個月
+        function lastMonth() {
+            month--
+            if (month == -1) {
+                month = 11
+                year--
+            }
+            init()
+
+        }
+        //下個月
+        function nextMonth() {
+            month++
+            if (month == 12) {
+                month = 0
+                year++
+            }
+            init()
+        }
+        //新增
+        function addTodoItem() {
+            let date = addDate.value
+            let todoItem = addTitle.value
+            let todoTex = addTxt.value
+
+            //資料結構
+            let todoObj = {
+                title: todoItem,
+                txt: todoTex
+            }
+            let todoList = []
+            if (localStorage.getItem(date) == null) {
+                //那天沒行程，加行程
+                todoList.push(todoObj)
+            }
+            else {
+                //那天有行程
+                //localstorage.getItem(date)得到資料轉成Json
+                todoList = JSON.parse(localStorage.getItem(date))
+                todoList.push(todoObj)
+            }
+            //存回localstorage
+            localStorage.setItem(date, JSON.stringify(todoList))
+
+            bootstrap.Modal.getOrCreateInstance(addModal).hide()
+            init()
+        }
+        //修改行程
+        function editTodoItem() {
+            let date = editDate.value
+            let todoItem = editTitle.value
+            let todoTxt = editTxt.value
+            let todoList = JSON.parse(localStorage.getItem(date))
+            todoList[currentTodoIndex] = {
+                title: todoItem,
+                txt: todoTxt
+            }
+            localStorage.setItem(date, JSON.stringify(todoList))
+
+            bootstrap.Modal.getOrCreateInstance(editModal).hide()
+            init()
+        }
+        //刪除行程
+        function deleteTodoItem() {
+            let date = editDate.value
+            let todoList = JSON.parse(localStorage.getItem(date))
+            todoList.splice(currentTodoIndex, 1)
+
+            localStorage.setItem(date, JSON.stringify(todoList))
+
+            bootstrap.Modal.getOrCreateInstance(addModal).hide()
+            init()
+        }
+
+    </script>
+
+</body>
+
+</html>
