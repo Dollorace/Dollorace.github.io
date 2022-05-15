@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+        integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    <!-- map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    
+
+    <title>Covid</title>
+    <style>
+        .container-fluid>.row {
+            height: 100vh;
+        }
+
+        .container-fluid{
+            background-color: gold;
+        }
+
+        #map {
+            height: 100%;
+        }
+
+        #county{
+            max-width: 600px;
+            
+        }
+
+        strong{
+            font-size: large;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row py-3">
+            <div class="col-6 map">
+                <div id="map"></div>
+            </div>
+            <div class="col-6 list">
+                <div class="row">
+                    <div class="form-group col-12">
+                        <h2 class="w-100  my-5">
+                            公費COVID-19快篩試劑社區定點診所名單
+                        </h2>
+                        <label for="county">縣/市</label>
+                        <select id="county" class="form-control">
+                            <!-- <option value=""></option> -->
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    
+                    <strong class="mt-4">搜尋結果為: </strong>
+
+                    <div class="col-12" id="detail">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
+    </script>
+    <!-- Axios -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.25.0/axios.min.js"
+        integrity="sha512-/Q6t3CASm04EliI1QyIDAA/nDo9R8FQ/BULoUFyN4n/BDdyIxeH7u++Z+eobdmr11gG5D/6nPFyDlnisDwhpYA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- 葉子 -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+
+
+
+    <script>
+        
+        let map
+        const detail = document.querySelector('#detail')
+        //可以fetch，then之前都不會執行
+        //也可以promise
+        let clinicDataRequest =
+            axios.get(
+                'https://raw.githubusercontent.com/Dollorace/Dollorace.github.io/main/covid.json'
+            )
+
+        //診所資訊
+        let clinicData 
+
+        //地圖marker叢集群組
+        let markers = L.markerClusterGroup() 
+
+
+        //DOM
+        const countrySelect = document.querySelector('#county')
+        const areaText = document.querySelector('strong')
+
+        const tableBody = document.querySelector('tbody')
+
+
+        //window.onload
+        window.onload = function () {
+            setMap()
+
+            //Promise.all裡面是陣列，裡面宣告的都要成功才會promise
+            Promise.all([clinicDataRequest])
+                .then(response => {
+
+                    //解構賦值
+                    let clinic = response[0]                    
+                    //console.log(clinic);
+
+                    clinicData = clinic.data
+                    //console.log(clinicData);
+
+
+                    //初始設定地圖
+                    setMarker()
+
+                    let done = ['請選擇'].concat([...new Set(clinicData.map(x => x.county))])  
+                    //console.log(done)   
+
+                    done.forEach(x => {
+                        let option = document.createElement('option')
+                        option.innerText = x
+                        option.value = x == '請選擇' ? '' : x
+                        countrySelect.appendChild(option)
+                    })
+                })
+
+
+            //地圖的焦點移動至該縣市
+            countrySelect.onchange = function () {
+                if (countrySelect.value != '') {
+                    let country = clinicData.find(x => x.county == countrySelect.value)
+                    map.setView([country.Lat, country.Lng], 12)
+                    //map.setView([country.Lat, country.Lng], 12)
+                    //map.移動焦點(  [經度  ,   緯度]        ,zoom)
+                }
+            }
+
+        }
+
+
+        
+        function setMap() {
+            //初始化地圖
+            map = L.map('map', {
+                center: [23.97565, 120.9738819],
+                zoom: 8
+            })            
+            //center: 地圖一開始中心點要在哪個經緯度
+            //zoom :地圖的縮放程度
+
+
+            //設定圖資
+            let osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+
+            //圖層
+            let osm = new L.TileLayer(osmUrl, {
+                minZoom: 8,
+                maxZoom: 19
+            })
+            //minZoom:最小縮放
+            //maxZoom:最大縮放
+
+            map.addLayer(osm)
+        }
+
+        
+        Array.prototype.groupBy = function (prop) {
+            return this.reduce(function (group, item) {
+                const val = item[prop]
+                group[val] = group[val] || []
+                group[val].push(item)
+                return group
+            }, {})
+        }
+
+        function setMarker() {
+
+            //有markers就要清空marker的Layer
+            if (markers) {
+                markers.clearLayers()
+            }
+
+            //markers樣式自訂
+            var clinicIcon = L.icon({
+                iconUrl: './++location.png',
+                iconSize: [25, 35] // size of the icon
+            });
+
+            //滑動
+            markers.on('clusterclick', function (a) {
+                a.layer.zoomToBounds({ padding: [20, 20] });
+            });
+
+
+            Object.keys(clinicData).forEach(x => {
+                let data = clinicData[x]
+
+                let marker = L.marker([data.Lat, data.Lng],{icon: clinicIcon})
+
+
+                marker.bindPopup(
+                    `
+                    <h3>${data.county} ${data.town}</h3>
+                    <p class='text-center'>${data.name}</p>
+                    <p>${data.address}</p>
+                    <p>${data.phone}</p>
+                    `
+                )
+
+
+                marker.addEventListener('click', function () {
+                    areaText.innerText = `${data.county} ${data.town}`
+                    detail.innerHTML = ''
+
+                    let clinic_name =document.createElement('h3')
+                    let clinic_address =document.createElement('p')
+                    let clinic_phone =document.createElement('p')
+                    
+                    clinic_name.innerHTML = '名稱: '+data.name
+                    clinic_name.setAttribute('class','my-3')
+
+                    clinic_address.setAttribute('class','fs-5')
+                    clinic_address.innerHTML = '地址: '+data.address
+
+                    clinic_phone.setAttribute('class','fs-5')
+                    clinic_phone.innerHTML = '電話: '+data.phone
+
+                    detail.append(clinic_name,clinic_address,clinic_phone)
+                })
+                markers.addLayer(marker)
+            })
+            map.addLayer(markers)
+        }
+    </script>
+</body>
+
+</html>
